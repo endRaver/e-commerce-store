@@ -1,4 +1,12 @@
 // backend/swagger/product.swagger.js
+
+/**
+ * @swagger
+ * tags:
+ *   name: Products
+ *   description: Product management
+ */
+
 /**
  * @swagger
  * /products:
@@ -11,7 +19,6 @@
  *       500:
  *         description: Server error
  */
-router.get('/', protectedRoute, adminRoute, getAllProducts);
 
 /**
  * @swagger
@@ -25,7 +32,6 @@ router.get('/', protectedRoute, adminRoute, getAllProducts);
  *       500:
  *         description: Server error
  */
-router.get('/featured', getFeaturedProducts);
 
 /**
  * @swagger
@@ -48,7 +54,6 @@ router.get('/featured', getFeaturedProducts);
  *       500:
  *         description: Server error
  */
-router.get('/category/:category', getProductsByCategory);
 
 /**
  * @swagger
@@ -62,7 +67,6 @@ router.get('/category/:category', getProductsByCategory);
  *       500:
  *         description: Server error
  */
-router.get('/recommendations', getRecommendedProducts);
 
 /**
  * @swagger
@@ -93,7 +97,6 @@ router.get('/recommendations', getRecommendedProducts);
  *       500:
  *         description: Server error
  */
-router.post('/', protectedRoute, adminRoute, createProduct);
 
 /**
  * @swagger
@@ -116,7 +119,6 @@ router.post('/', protectedRoute, adminRoute, createProduct);
  *       500:
  *         description: Server error
  */
-router.patch('/:id', protectedRoute, adminRoute, toggleFeaturedProduct);
 
 /**
  * @swagger

@@ -1,4 +1,12 @@
 // backend/swagger/auth.swagger.js
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Authentication management
+ */
+
 /**
  * @swagger
  * /auth/signup:

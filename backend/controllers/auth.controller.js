@@ -70,12 +70,10 @@ export const login = async (req, res) => {
       setCookies(res, accessToken, refreshToken)
 
       res.json({
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       })
     } else {
       res.status(401).json({ message: "Invalid email or password" })

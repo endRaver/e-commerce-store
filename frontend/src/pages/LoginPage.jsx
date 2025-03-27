@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Loader, Lock, Mail, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
+import { useUserStore } from "../stores/useUserStore";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const loading = true;
+  const [email, setEmail] = useState("test@test.com");
+  const [password, setPassword] = useState("test123");
+  const { login, loading } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
+    login(email, password);
   };
 
   return (

@@ -1,16 +1,20 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Loader, Lock, Mail, LogIn } from "lucide-react";
+import { User, Lock, Mail, Loader, UserPlus, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
-const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const loading = true;
+const SignUpPage = () => {
+  const loading = false;
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password);
+    console.log(formData);
   };
 
   return (
@@ -36,6 +40,31 @@ const LoginPage = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-300"
+              >
+                Full name
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                </div>
+                <input
+                  id="name"
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  placeholder="John Doe"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-300"
               >
@@ -49,8 +78,10 @@ const LoginPage = () => {
                   id="email"
                   type="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   placeholder="you@example.com"
                 />
@@ -72,8 +103,38 @@ const LoginPage = () => {
                   id="password"
                   type="password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  placeholder="********"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-300"
+              >
+                Confirm Password
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                   className="block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   placeholder="********"
                 />
@@ -95,20 +156,20 @@ const LoginPage = () => {
                 </>
               ) : (
                 <>
-                  <LogIn className="h-5 w-5 mr-2" aria-hidden="true" />
-                  Login
+                  <UserPlus className="h-5 w-5 mr-2" aria-hidden="true" />
+                  Sign up
                 </>
               )}
             </button>
           </form>
 
           <p className="mt-8 text-center text-sm text-gray-400">
-            Not a member?{" "}
+            Already have an account?{" "}
             <Link
-              to="/signup"
+              to="/login"
               className="font-medium text-emerald-400 hover:text-emerald-300"
             >
-              Sign up now
+              Login here
               <ArrowRight className="h-4 w-4 inline" aria-hidden="true" />
             </Link>
           </p>
@@ -118,4 +179,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignUpPage;

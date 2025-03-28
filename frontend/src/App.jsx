@@ -12,11 +12,20 @@ import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CategoryPage from "./pages/CategoryPage";
 import CartPage from "./pages/CartPage";
+import { useCartStore } from "./stores/useCartStore";
+
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore();
+  const { getCartItems } = useCartStore();
+
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    if (!user) return;
+    getCartItems();
+  }, [user, getCartItems]);
 
   if (checkingAuth) {
     return <LoadingSpinner />;
@@ -51,7 +60,7 @@ function App() {
           />
           <Route
             path="/cart"
-            element={!user ? <CartPage /> : <Navigate to="/login" />}
+            element={user ? <CartPage /> : <Navigate to="/login" />}
           />
           <Route path="/category/:category" element={<CategoryPage />} />
         </Routes>

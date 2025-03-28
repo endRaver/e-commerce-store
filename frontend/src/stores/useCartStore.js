@@ -7,6 +7,7 @@ export const useCartStore = create((set, get) => ({
   coupon: null,
   total: 0,
   subtotal: 0,
+  isCouponApplied: false,
 
   getCartItems: async () => {
     try {
@@ -15,31 +16,40 @@ export const useCartStore = create((set, get) => ({
       get().calculateTotals();
     } catch (error) {
       set({ cart: [] });
-      toast.error(error.response.data.message || "Failed to fetch cart items");
+      toast.error(error?.response?.data?.message || "Failed to fetch cart items");
     }
   },
 
   addToCart: async (product) => {
     try {
-      const res = await axiosInstance.post("/cart", { productId: product._id });
+      await axiosInstance.post("/cart", { productId: product._id });
       toast.success("Product added to cart");
 
       set((prevState) => {
-        const existingProduct = prevState.cart.find(
-          (item) => item._id === product._id
-        );
-
-        const newCart = existingProduct
-          ? prevState.cart.map((item) => item._id === product._id
-            ? { ...item, quantity: item.quantity + 1 } : item)
-          : [...prevState.cart, { ...res.data, quantity: 1 }];
-
+        const existingItem = prevState.cart.find((item) => item._id === product._id);
+        const newCart = existingItem
+          ? prevState.cart.map((item) =>
+            item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+          : [...prevState.cart, { ...product, quantity: 1 }];
         return { cart: newCart };
       });
 
       get().calculateTotals();
     } catch (error) {
-      toast.error(error.response.data.message || "Failed to add product to cart");
+      toast.error(error?.response?.data?.message || "Failed to add product to cart");
+    }
+  },
+
+  removeFromCart: async (productId) => {
+    try {
+      await axiosInstance.delete(`/cart`, { data: { productId } });
+      toast.success("Product removed from cart");
+
+      set((prevState) => ({ cart: prevState.cart.filter((item) => item._id !== productId) }));
+      get().calculateTotals();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to remove product from cart");
     }
   },
 
@@ -54,6 +64,26 @@ export const useCartStore = create((set, get) => ({
     }
 
     set({ subtotal, total });
+  },
+
+  updateQuantity: async (productId, quantity) => {
+    if (quantity === 0) {
+      get().removeFromCart(productId);
+      return;
+    }
+
+    try {
+      await axiosInstance.put(`/cart/${productId}`, { quantity });
+      set((prevState) => ({
+        cart: prevState.cart.map((item) =>
+          item._id === productId ? { ...item, quantity } : item
+        )
+      }));
+
+      get().calculateTotals();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to update quantity");
+    }
   },
 
 }));

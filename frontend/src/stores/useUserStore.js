@@ -63,6 +63,52 @@ export const useUserStore = create((set, get) => ({
       set({ checkingAuth: false, user: null });
     }
   },
+
+  refreshToken: async () => {
+    // Prevent multiple simultaneous refresh attempts
+    if (get().checkingAuth) return;
+
+    set({ checkingAuth: true });
+
+    try {
+      const response = await axiosInstance.post("/auth/refresh-token");
+      set({ checkingAuth: false });
+      return response.data;
+    } catch (error) {
+      set({ user: null, checkingAuth: false });
+      throw error;
+    }
+  },
 }));
 
-// TODO: Implement the axios interceptor to refresh the token when it expires
+// Implement the axios interceptor to refresh the token when it expires
+let refreshPromise = null;
+
+axiosInstance.interceptors.request.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // If a refresh is already in progress, wait for it to complete
+        if (refreshPromise) {
+          await refreshPromise;
+          return axiosInstance(originalRequest);
+        }
+
+        // Start the refresh process
+        refreshPromise = useUserStore.getState().refreshToken();
+        await refreshPromise;
+        refreshPromise = null;
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        // If the refresh fails, logout the user
+        useUserStore.getState().logout();
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  }
+);

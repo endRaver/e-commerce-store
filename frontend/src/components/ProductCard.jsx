@@ -1,16 +1,17 @@
 import toast from "react-hot-toast";
 import { ShoppingCart } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
-// import { useCartStore } from "../stores/useCartStore";
+import { useCartStore } from "../stores/useCartStore";
 
 const ProductCard = ({ product }) => {
   const { user } = useUserStore();
-  // const { addToCart } = useCartStore();
+  const { addToCart } = useCartStore();
 
   const handleAddToCart = () => {
     if (!user) {
       toast.error("Please login to add to cart", { id: "login" });
     } else {
+      addToCart(product);
     }
   };
 
@@ -20,7 +21,7 @@ const ProductCard = ({ product }) => {
         <img
           className="object-cover w-full"
           src={product.image}
-          alt="product image"
+          alt={product.name}
         />
         <div className="absolute inset-0 bg-black/20" />
       </div>
